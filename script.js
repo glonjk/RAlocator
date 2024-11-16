@@ -1,4 +1,4 @@
-// Funktion zum Berechnen der Entfernung in Kilometern zwischen zwei geographischen Punkten
+// Funktion zum Berechnen der Entfernung zwischen zwei geographischen Punkten
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Erdradius in Kilometern
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -18,28 +18,54 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 const originLat = 52.5377876;  // Latitude
 const originLon = 13.4124408;  // Longitude
 
-// Beispiel-URL für RA Events in Berlin (du musst die URL eventuell anpassen!)
-fetch('https://www.residentadvisor.net/api/events?city=Berlin')
-  .then(response => response.json())
-  .then(events => {
-    // Events nach Entfernung vom festen Standort sortieren
-    events.sort((a, b) => {
-      const distA = calculateDistance(originLat, originLon, a.venue.latitude, a.venue.longitude);
-      const distB = calculateDistance(originLat, originLon, b.venue.latitude, b.venue.longitude);
-      return distA - distB;  // Aufsteigend nach Entfernung sortieren
+// Beispiel: RA.co hat keine echte API, also holen wir uns die Veranstaltungen von der Webseite
+fetch('https://de.ra.co/events/de/berlin')
+  .then(response => response.text())
+  .then(html => {
+    // HTML-Inhalt der Seite analysieren (wird normalerweise mit einem HTML-Parser durchgeführt)
+    // Da RA keine offizielle API hat, müssen wir den HTML-Inhalt parsen und extrahieren.
+    
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Extrahieren der Veranstaltungseinträge
+    const events = Array.from(doc.querySelectorAll('.event-item')).map(item => {
+      const name = item.querySelector('h3').innerText;
+      const venue = item.querySelector('.venue').innerText;
+      const lat = parseFloat(item.getAttribute('data-latitude'));
+      const lon = parseFloat(item.getAttribute('data-longitude'));
+
+      return { name, venue, lat, lon };
     });
 
-    // Veranstaltungen in die Liste einfügen
-    const eventList = document.getElementById('event-list');
-    events.forEach(event => {
+    // Beliebte Veranstaltungen (die ersten 4)
+    const popularEvents = events.slice(0, 4);
+    const allEvents = events.slice(4);
+
+    // Veranstaltungen in die HTML-Elemente einfügen
+    const popularList = document.getElementById('popular-events-list');
+    const allList = document.getElementById('all-events-list');
+
+    popularEvents.forEach(event => {
       const li = document.createElement('li');
       li.classList.add('event-item');
       li.innerHTML = `
-        <h2>${event.name}</h2>
-        <p>Location: ${event.venue.name}</p>
-        <p>Entfernung: ${calculateDistance(originLat, originLon, event.venue.latitude, event.venue.longitude).toFixed(2)} km</p>
+        <h3>${event.name}</h3>
+        <p>${event.venue}</p>
+        <p>Entfernung: ${calculateDistance(originLat, originLon, event.lat, event.lon).toFixed(2)} km</p>
       `;
-      eventList.appendChild(li);
+      popularList.appendChild(li);
+    });
+
+    allEvents.forEach(event => {
+      const li = document.createElement('li');
+      li.classList.add('event-item');
+      li.innerHTML = `
+        <h3>${event.name}</h3>
+        <p>${event.venue}</p>
+        <p>Entfernung: ${calculateDistance(originLat, originLon, event.lat, event.lon).toFixed(2)} km</p>
+      `;
+      allList.appendChild(li);
     });
   })
   .catch(error => {
