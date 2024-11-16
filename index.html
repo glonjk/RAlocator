@@ -3,65 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veranstaltungen Finder</title>
+    <title>Veranstaltungen auf Resident Advisor</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
+            background-color: #f9f9f9;
         }
         #events {
             margin-top: 20px;
         }
         .event {
-            margin-bottom: 20px;
-            padding: 10px;
+            padding: 15px;
+            background-color: #fff;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Veranstaltungen Finder</h1>
-    <label for="city">Stadt: </label>
-    <input type="text" id="city" placeholder="z.B. Berlin" value="berlin">
+    <h1>Finde Veranstaltungen auf Resident Advisor</h1>
+    <p>Gib eine Stadt ein (z.B. Berlin):</p>
+    
+    <input type="text" id="city" placeholder="Stadt eingeben" value="Berlin">
     <button onclick="getEvents()">Veranstaltungen anzeigen</button>
 
-    <h2>Veranstaltungen</h2>
     <div id="events"></div>
 
-    <script>
-        async function getEvents() {
-            const city = document.getElementById('city').value;
-
-            // Hier benutzen wir den CORS-Proxy "cors-anywhere" für den RA-Link
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const url = `https://de.ra.co/events/de/${city}`;
-            const response = await fetch(proxyUrl + url);
-            
-            // Fehlerbehandlung, falls die Anfrage fehlschlägt
-            if (!response.ok) {
-                document.getElementById('events').innerHTML = 'Fehler beim Abrufen der Daten!';
-                return;
-            }
-
-            // Warten auf die Antwort und JSON parsen
-            const data = await response.json();
-
-            // Anzeigen der Veranstaltungen auf der Webseite
-            const eventsContainer = document.getElementById('events');
-            eventsContainer.innerHTML = ''; // Leere das Container vor der Anzeige
-
-            data.forEach(event => {
-                const eventDiv = document.createElement('div');
-                eventDiv.className = 'event';
-                eventDiv.innerHTML = `
-                    <h3>${event.name}</h3>
-                    <p>${event.date}</p>
-                    <p>${event.location}</p>
-                `;
-                eventsContainer.appendChild(eventDiv);
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
