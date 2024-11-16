@@ -8,31 +8,51 @@ body {
 
 .container {
   width: 80%;
-  margin: 0 auto;
+  margin: 20px auto;
   padding-top: 20px;
 }
 
-h1 {
+h1, h2 {
   color: #333;
 }
 
-#event-list {
-  list-style-type: none;
-  padding: 0;
+.event-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .event-item {
   background-color: #fff;
-  margin: 10px 0;
+  margin: 10px;
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 200px;
 }
 
-.event-item h2 {
+.event-item h3 {
   margin: 0;
+  font-size: 1.2em;
 }
 
 .event-item p {
   margin: 5px 0;
+}
+
+.horizontal {
+  flex-direction: row; /* Beliebte Veranstaltungen horizontal */
+}
+
+.horizontal .event-item {
+  width: 300px; /* Etwas breiter für die horizontalen Events */
+}
+
+#all-events {
+  margin-top: 50px;
+}
+
+#popular-events {
+  margin-bottom: 50px;
 }
