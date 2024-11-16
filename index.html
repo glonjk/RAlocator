@@ -3,16 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RA Events in Berlin</title>
+  <title>RA Veranstaltungen in Berlin</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <h1>Resident Advisor Veranstaltungen in Berlin</h1>
-    <ul id="event-list">
-      <!-- Events werden hier angezeigt -->
-    </ul>
+    
+    <!-- Beliebte Veranstaltungen horizontal -->
+    <div id="popular-events">
+      <h2>Beliebte Veranstaltungen</h2>
+      <div id="popular-events-list" class="event-list horizontal">
+        <!-- Beliebte Veranstaltungen werden hier eingefügt -->
+      </div>
+    </div>
+    
+    <!-- Alle Veranstaltungen vertikal -->
+    <div id="all-events">
+      <h2>Alle Veranstaltungen</h2>
+      <div id="all-events-list" class="event-list">
+        <!-- Veranstaltungen werden hier eingefügt -->
+      </div>
+    </div>
   </div>
+  
   <script src="script.js"></script>
 </body>
 </html>
