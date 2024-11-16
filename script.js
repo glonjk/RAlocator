@@ -1,35 +1,41 @@
 async function getEvents() {
-    const city = document.getElementById('city').value;
+    const city = document.getElementById('city').value;  // Hole den Wert der Stadt aus dem Input-Feld
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/'; // Öffentlicher CORS-Proxy
+    const targetUrl = `https://de.ra.co/events/de/${city}`; // URL der Resident Advisor-Seite
 
-    // Verwende den cors-anywhere Proxy mit deinem API-Key
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const targetUrl = `https://de.ra.co/events/de/${city}`;
-    
-    const headers = {
-        'X-Requested-With': 'XMLHttpRequest',  // Header, der den Proxy-Server anzeigt
-        'Authorization': 'Bearer dein-api-key-hier' // Setze deinen API-Key hier ein
-    };
-    
-    const response = await fetch(proxyUrl + targetUrl, { headers });
+    try {
+        const response = await fetch(proxyUrl + targetUrl, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest', // Wichtig für den Proxy
+            }
+        });
 
-    if (!response.ok) {
-        document.getElementById('events').innerHTML = 'Fehler beim Abrufen der Daten!';
-        return;
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen der Veranstaltungen');
+        }
+
+        const data = await response.json(); // Daten im JSON-Format
+
+        // Anzeige der Veranstaltungen auf der Seite
+        const eventsContainer = document.getElementById('events');
+        eventsContainer.innerHTML = ''; // Leere den Container vor der Anzeige neuer Events
+
+        if (data.events && data.events.length > 0) {
+            data.events.forEach(event => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event';
+                eventDiv.innerHTML = `
+                    <h3>${event.name}</h3>
+                    <p><strong>Datum:</strong> ${event.date}</p>
+                    <p><strong>Ort:</strong> ${event.location}</p>
+                `;
+                eventsContainer.appendChild(eventDiv);
+            });
+        } else {
+            eventsContainer.innerHTML = '<p>Keine Veranstaltungen gefunden.</p>';
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Es gab ein Problem bei der Anfrage.');
     }
-
-    const data = await response.json();
-
-    const eventsContainer = document.getElementById('events');
-    eventsContainer.innerHTML = ''; // Leere das Container vor der Anzeige
-
-    data.forEach(event => {
-        const eventDiv = document.createElement('div');
-        eventDiv.className = 'event';
-        eventDiv.innerHTML = `
-            <h3>${event.name}</h3>
-            <p>${event.date}</p>
-            <p>${event.location}</p>
-        `;
-        eventsContainer.appendChild(eventDiv);
-    });
 }
